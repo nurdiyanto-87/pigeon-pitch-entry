@@ -25,6 +25,12 @@ def main() -> None:
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8", newline="\n") as f:
         f.write(text)
+    # Round-trip check: what the grader reads must be byte-identical
+    # to the pitch we validated above (no added newline, no re-encoding).
+    with open("/output/entry.txt", "rb") as f:
+        on_disk = f.read()
+    assert on_disk == encoded, "entry.txt on disk differs from validated pitch"
+    assert on_disk.decode("utf-8") == text
     print(text)
     print(f"[{len(text)} chars, {len(encoded)} bytes]")
 
